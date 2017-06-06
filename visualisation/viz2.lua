@@ -8,7 +8,9 @@ local imgSize = 224 -- Can be smaller than 224 x 224 input as only using convolu
 local filterIndex = 1 -- Must index a valid convolutional filter
 
 -- Load VGG (small)
-local vgg = loadcaffe.load('VGG_CNN_S_deploy.prototxt', 'VGG_CNN_S.caffemodel', 'nn')
+local prototxt = '/home/akaishuushan/FYP/VGG_CNN_S/VGG_CNN_S_deploy.prototxt' -- define prototxt path
+local caffemodel='/home/akaishuushan/FYP/VGG_CNN_S/VGG_CNN_S.caffemodel' -- define caffemodel path
+local vgg = loadcaffe.load(prototxt, caffemodel, 'nn') 
 -- Remove fully connected layers
 for l = 1, 11 do
   vgg:remove()
@@ -56,7 +58,7 @@ gradLoss[filterIndex] = 1 -- Visualise one filter
 local win = image.display({image = img})
 
 -- Maximise mean activation of filter
-for i = 1, 50 do
+for i = 1, 20 do
   local output = model:forward(img)
   local loss = torch.mean(output[filterIndex]) -- Mean activation of filter (which should be maximised)
   print(loss)
