@@ -16,7 +16,8 @@ local loadSize = {3,256,256} --{colour channel, width, height}
 local sampleSize = {3,224,224}
 
 -- Load image
-local path = '/home/akaishuushan/下载/n02113186/n02113186_128.JPEG' --corgi
+local path = '/home/akaishuushan/FYP/VGG_CNN_S/test_img/zbuk.jpg'
+--local path = '/home/akaishuushan/下载/n02113186/n02113186_128.JPEG' --corgi
 --local path = '/home/akaishuushan/下载/f4bdead1fda47f1 (1).jpg' --cat
 --local path = '/home/akaishuushan/下载/f4bdead1fda47f1.jpg' --cat
 --local path = '/home/akaishuushan/下载/images.jpg' -- truck
@@ -87,11 +88,11 @@ for line in io.lines 'label.txt' do -- read in label txt
 table.insert(label_table, line)
 end
 
-_,classes=predict:view(-1):sort(true) -- create a view of prediction results and sort it by descending. 【sort()是ascending】
+val,classes=predict:view(-1):sort(true) -- create a view of prediction results and sort it by descending. 【sort()是ascending】
 
 --r=classes[1]+1 -- the first term of classes is the index of max probability, however label table index starts from 0, to map to the table this index should be added 1.
 print('This image is',label_table[classes[1]],label_table[classes[2]],label_table[classes[3]] )
-
+print(val[1], val[2], val[3])
 
 
 	
