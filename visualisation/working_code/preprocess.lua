@@ -28,10 +28,10 @@ function preprocess( img )
 --[[
     -- 4. rescale to 0-255 and subtract mean
     img_BGR:mul(img_BGR, 255) -- torch express pixels 0-1, VGG requires 0-255
-    local bgr_means = {103.939,116.779,123.68}
-    --local bgr_means = {0.4076,0.45796,0.48502} 
+    local bgr_means = {103.939,116.779,123.68}]]
+    local bgr_means = {0.4076,0.45796,0.48502} 
     for i=1,3 do
     img_BGR[i]:add(-bgr_means[i])
-    end]]
+    end
     return img_BGR
 end

@@ -6,9 +6,10 @@
 		-- rewrite the above two funcs rather than override backward() 
 local alphanorm, parent = torch.class('nn.alphanorm', 'nn.Module')
 
-function alphanorm:__init(alpha)
+function alphanorm:__init(alpha, strength)
    parent.__init(self)
    self.alpha =  alpha or 6
+   self.strength = strength or 0.5
 end
 
 function alphanorm:updateOutput(input)
@@ -19,7 +20,11 @@ end
 function alphanorm:updateGradInput(input, gradOutput)
     self.gradInput:resizeAs(input)
     norm = torch.norm(input, self.alpha)
+    --pow_sum = torch.pow(input, self.alpha-1)
+    --sum = torch.mul(pow_sum, self.alpha)
     self.gradInput:copy(torch.cmul(torch.pow(torch.abs(input):div(norm+1e-20), self.alpha - 1),torch.sign(input)))
+    --self.gradInput:copy(torch.cmul(sum, torch.sign(input)))
+    self.gradInput:mul(self.strength)
     self.gradInput:add(gradOutput)
     return self.gradInput
 end
