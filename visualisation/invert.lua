@@ -39,13 +39,13 @@ x_0f = f:clone()
 x0_norm = math.sqrt(torch.sum(torch.pow(x_0f, 2))) --scalar_l2_norm_of_x_0f
 x = torch.Tensor(3, imgH, imgW):uniform(-1, 1):mul(20):add(128) --initial inversion img
 x_n = torch.div(x, 255)
-for n = 1, 4000 do -- do iterations to visualise
+for n = 1, 1e1000 do -- do iterations to visualise
 	--net:zeroGradParameters() -- try have/without this line: if the module has params, this will zero the accumulation of the gradients wrt these params
 	net:evaluate()
 	x_f = net:forward(x_n) --inversion feature from this layer
 	loss = mse:forward(x_f, x_0f) -- compute the MSE loss of the inversion img
 	grad_loss = mse:backward(x_f, x_0f) -- compute the grad of loss wrt to x_f
-	--grad_loss:div(x0_norm)
+	grad_loss:cdiv(x0_norm)
 	inv_grad = net:backward(x_n, grad_loss) -- Gradient of input wrt (maximise activation) activation 
 	print(torch.sum(inv_grad))
 	--inv_grad:div(math.sqrt(torch.pow(inv_grad, 2):mean()) + 1e-5)
