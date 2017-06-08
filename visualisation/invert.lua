@@ -9,10 +9,10 @@ require 'alphanorm'
 
 
 -- Load VGG (small)
-local prototxt = '/home/akaishuushan/FYP/VGG_CNN_S/VGG_CNN_S_deploy.prototxt' -- define prototxt path
-local caffemodel='/home/akaishuushan/FYP/VGG_CNN_S/VGG_CNN_S.caffemodel' -- define caffemodel path
+local prototxt = '/home/akaishuushan/FYP/VGG_CNN_M/VGG_CNN_M_deploy.prototxt' -- define prototxt path
+local caffemodel='/home/akaishuushan/FYP/VGG_CNN_M/VGG_CNN_M.caffemodel' -- define caffemodel path
 vgg = loadcaffe.load(prototxt, caffemodel, 'nn') 
-img = image.load('golden.jpg')
+img = image.load('fox.jpg')
 img = preprocess(img)
 local win = image.display({image = img})
 
@@ -25,9 +25,9 @@ alpha_weight = 0.00005
 TVCriterion = nn.TVCriterion(0.00005)
 alphanorm = nn.alphanorm(alpha_idx, alpha_weight)
 net = nn.Sequential()
-net:add(TVCriterion)
-net:add(alphanorm)
-for l = 1, 12 do
+--net:add(TVCriterion)
+--net:add(alphanorm)
+for l = 1, 11 do
         	net:add(vgg:get(l))
 end
 
