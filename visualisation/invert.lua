@@ -25,8 +25,8 @@ alpha_weight = 0.00005
 TVCriterion = nn.TVCriterion(0.00005)
 alphanorm = nn.alphanorm(alpha_idx, alpha_weight)
 net = nn.Sequential()
---net:add(TVCriterion)
---net:add(alphanorm)
+net:add(TVCriterion)
+net:add(alphanorm)
 for l = 1, 11 do
         	net:add(vgg:get(l))
 end
@@ -45,7 +45,7 @@ for n = 1, 1e1000 do -- do iterations to visualise
 	x_f = net:forward(x_n) --inversion feature from this layer
 	loss = mse:forward(x_f, x_0f) -- compute the MSE loss of the inversion img
 	grad_loss = mse:backward(x_f, x_0f) -- compute the grad of loss wrt to x_f
-	grad_loss:cdiv(x0_norm)
+	grad_loss:cdiv(torch.abs(x_0f))
 	inv_grad = net:backward(x_n, grad_loss) -- Gradient of input wrt (maximise activation) activation 
 	print(torch.sum(inv_grad))
 	--inv_grad:div(math.sqrt(torch.pow(inv_grad, 2):mean()) + 1e-5)
