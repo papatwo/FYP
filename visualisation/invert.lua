@@ -27,7 +27,7 @@ alphanorm = nn.alphanorm(alpha_idx, alpha_weight)
 net = nn.Sequential()
 net:add(TVCriterion)
 net:add(alphanorm)
-for l = 1, 11 do
+for l = 1, 9 do
         	net:add(vgg:get(l))
 end
 
