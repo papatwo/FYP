@@ -7,17 +7,17 @@ require 'TVCriterion'
 local imgSize = 224 -- Can be smaller than 224 x 224 input as only using convolutional layers
 
 -- Load VGG (small)
-local prototxt = '/home/akaishuushan/FYP/illu2vec/illust2vec.prototxt' -- define prototxt path
-local caffemodel='/home/akaishuushan/FYP/illu2vec/illust2vec_ver200.caffemodel' -- define caffemodel path
+local prototxt = '/home/akaishuushan/FYP/VGG16/VGG_16_deploy.prototxt' -- define prototxt path
+local caffemodel='/home/akaishuushan/FYP/VGG16/VGG_ILSVRC_16_layers.caffemodel' -- define caffemodel path
 vgg = loadcaffe.load(prototxt, caffemodel, 'nn') 
 
 -- Set up image save path
-svpath = '/home/akaishuushan/FYP/visualisation/results/filterviz_illu2vec'
+svpath = '/home/akaishuushan/FYP/visualisation/results/filterviz_vgg16'
 -- pick up the layer idx of conv_layers
-conv_layer = torch.Tensor({{1, 4, 7, 9, 12, 14, 17, 19, 22, 24, 26}})
+conv_layer = torch.Tensor({{1, 3, 6, 8, 11, 13, 15, 18, 20, 22, 25, 27, 29}}) -- find number of conv _ly in the model and identify the layer index here
 
 -- Remove unrequired layers
-for l = 11, 11 do--conv_layer:size()[2] do -- 5
+for l = 1, conv_layer:size()[2] do -- 5
   	model = nn.Sequential()
     	for i = 1, conv_layer[1][l] do -- get the new model
       		model:add(vgg:get(i))
@@ -39,7 +39,7 @@ for l = 11, 11 do--conv_layer:size()[2] do -- 5
       		--local filterIndex = f --80 -- Must index a valid convolutional filter
       		gradLoss[filterIndex] = 1 -- Visualise one filter (all other  filter indices are 0 but the selected filter is 1)
       		-- Maximise mean activation of filter
-      		for it = 1, 45 do -- Run gradient ascent for iterations
+      		for it = 1, 50 do -- Run gradient ascent for iterations
         			local output = model:forward(img)
         			local loss = torch.mean(output[filterIndex]) -- Mean activation of filter (which should be maximised)
         			local imgLoss = model:backward(img, gradLoss) -- Gradient of input wrt (maximise activation) loss

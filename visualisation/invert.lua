@@ -9,10 +9,13 @@ require 'alphanorm'
 
 
 -- Load VGG (small)
-local prototxt = '/home/akaishuushan/FYP/VGG_CNN_M/VGG_CNN_M_deploy.prototxt' -- define prototxt path
-local caffemodel='/home/akaishuushan/FYP/VGG_CNN_M/VGG_CNN_M.caffemodel' -- define caffemodel path
+--local prototxt = '/home/akaishuushan/FYP/VGG_CNN_M/VGG_CNN_M_deploy.prototxt' -- define prototxt path
+--local caffemodel='/home/akaishuushan/FYP/VGG_CNN_M/VGG_CNN_M.caffemodel' -- define caffemodel path
+local prototxt = '/home/akaishuushan/FYP/illu2vec/illust2vec.prototxt' -- define prototxt path
+local caffemodel='/home/akaishuushan/FYP/illu2vec/illust2vec_ver200.caffemodel' -- define caffemodel path
 vgg = loadcaffe.load(prototxt, caffemodel, 'nn') 
-img = image.load('fox.jpg')
+--img = image.load('fox.jpg')
+img = image.load('pj.jpg')
 img = preprocess(img)
 local win = image.display({image = img})
 
@@ -21,13 +24,13 @@ imgH = 224--img:size()[2]
 
 mse = nn.MSECriterion()
 alpha_idx = 6 -- the alpha value of alpha norm
-alpha_weight = 0.00005
-TVCriterion = nn.TVCriterion(0.00005)
+alpha_weight = 0.000005
+TVCriterion = nn.TVCriterion(0.000005)
 alphanorm = nn.alphanorm(alpha_idx, alpha_weight)
 net = nn.Sequential()
 net:add(TVCriterion)
 net:add(alphanorm)
-for l = 1, 9 do
+for l = 1, 17 do
         	net:add(vgg:get(l))
 end
 
