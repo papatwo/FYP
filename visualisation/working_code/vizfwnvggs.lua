@@ -38,6 +38,8 @@ for l = 3, conv_layer:size()[2] do -- 5
     --for filterIndex = 1, filter_N do
       --local filterIndex = f --80 -- Must index a valid convolutional filter
       gradLoss[filterIndex] = 1 -- Visualise one filter (all other  filter indices are 0 but the selected filter is 1)
+      -- because only depends on the selected filter, other dloss/dfilter = 0 as initialised above
+      
       -- Maximise mean activation of filter
       for it = 1, 25 do -- Run gradient ascent for iterations
         local output = model:forward(img)

@@ -3,10 +3,13 @@ local loadcaffe = require 'loadcaffe'
 require 'dpnn'
 require 'TVCriterion'
 require 'reducenet'
-require 'preprocess'
+--require 'preprocess'
+require 'preproillu'
 require 'alphanorm'
 require 'cutorch'
 require 'cunn'
+require 'hdf5'
+require 'deproillu'
 
 use_cuda = 1
 
@@ -19,18 +22,22 @@ local caffemodel='/data/users/hz4213/illust2vec_ver200.caffemodel' -- define caf
 svpath = '/data/users/hz4213/results/invert_illu2vec'
 vgg = loadcaffe.load(prototxt, caffemodel, 'nn') 
 img = image.load('misaka.jpg')
-img = preprocess(img)
+meanFile = hdf5.open('/data/users/hz4213/FYP/visualisation/working_code/img_mean.h5','r')
+img_mean = meanFile:read('img_mean'):all() 
+meanFile:close()
+
+img = preproillu(img, img_mean)
 if use_cuda then
 	img = img:cuda()
 end
 local win = image.display({image = img})
 
-imgW = 224--img:size()[3]
-imgH = 224--img:size()[2]
+imgW = 256--img:size()[3]
+imgH = 256--img:size()[2]
 
 mse = nn.MSECriterion()
 mse:cuda()
-alpha_idx = 10 -- the alpha value of alpha norm
+alpha_idx = 3 -- the alpha value of alpha norm
 alpha_weight = 0.00005
 TVCriterion = nn.TVCriterion(0.00005)
 alphanorm = nn.alphanorm(alpha_idx, alpha_weight)
@@ -62,7 +69,7 @@ for l = 1, conv_layer:size()[2] do
 		x = torch.Tensor(3, imgH, imgW):uniform(-1, 1):mul(20):add(128) --initial inversion img
 	end
 	x_n = torch.div(x, 255)
-	for n = 1, 3000 do -- do iterations to visualise
+	for n = 1, 30000 do -- do iterations to visualise
 	--net:zeroGradParameters() -- try have/without this line: if the module has params, this will zero the accumulation of the gradients wrt these params
 		net:evaluate()
 		x_f = net:forward(x_n) --inversion feature from this layer
@@ -76,7 +83,8 @@ for l = 1, conv_layer:size()[2] do
 		--x:add(-(inv_grad/x0_norm + 0.1 * alpha_grad + 0.1 * beta_grad)) --use grad wrt to these to optimise input
 		image.display({image = x_n, win = win})
 	end
-	back = deprocess(x_n)
+	img_mean = img_mean:cuda()
+	back = deproillu(x_n,img_mean)
 	image.display({image = back--[[, win = win]]})
     image.save(paths.concat(svpath, l .. '.jpg'), back)
 end

@@ -1,4 +1,4 @@
-function deprocess( img )
+function deproillu( img, img_mean )
     
     -- 3. colour channel RGB --> BGR 
     -- input colour channels: 1-->R      2-->G  3-->B
@@ -8,8 +8,8 @@ function deprocess( img )
                       -- keep G as before
 --add subtracted mean back[[
     -- 4. rescale to 0-255 and subtract mean
-    img:mul(255)
-    local rgb_means = {123.68,116.779,103.939}
+    back:mul(255)
+    local rgb_means = img_mean
     --local bgr_means = {0.4076,0.45796,0.48502} 
     for i=1,3 do
         back[i]:add(rgb_means[i])

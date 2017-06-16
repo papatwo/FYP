@@ -20,7 +20,7 @@ local prototxt = '/data/users/hz4213/VVGG_16_deploy.prototxt' -- define prototxt
 local caffemodel='/data/users/hz4213/VGG_ILSVRC_16_layers.caffemodel' -- define caffemodel path
 svpath = '/data/users/hz4213/results/invert_vgg16'
 vgg = loadcaffe.load(prototxt, caffemodel, 'nn') 
-img = image.load('fox.jpg')
+img = image.load('misaka.jpg')
 img = preprocess(img)
 if use_cuda then
 	img = img:cuda()
@@ -72,7 +72,8 @@ for l = 1, conv_layer:size()[2] do
 		loss = mse:forward(x_f, x_0f) -- compute the MSE loss of the inversion img
 		grad_loss = mse:backward(x_f, x_0f) -- compute the grad of loss wrt to x_f
 		inv_grad = net:backward(x, grad_loss) -- Gradient of input wrt (maximise activation) activation 
-		print(torch.sum(inv_grad))
+		--print(torch.sum(inv_grad))
+		print(n)
 		--inv_grad:div(math.sqrt(torch.pow(inv_grad, 2):mean()) + 1e-5)
 		-- grad descent bit
 		x_n:add(-inv_grad)
