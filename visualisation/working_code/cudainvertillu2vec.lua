@@ -21,7 +21,7 @@ local prototxt = '/data/users/hz4213/illust2vec.prototxt' -- define prototxt pat
 local caffemodel='/data/users/hz4213/illust2vec_ver200.caffemodel' -- define caffemodel path
 svpath = '/data/users/hz4213/results/invert_illu2vec'
 vgg = loadcaffe.load(prototxt, caffemodel, 'nn') 
-img = image.load('misaka.jpg')
+img = image.load('fox.jpg')
 meanFile = hdf5.open('/data/users/hz4213/FYP/visualisation/working_code/img_mean.h5','r')
 img_mean = meanFile:read('img_mean'):all() 
 meanFile:close()
@@ -37,7 +37,7 @@ imgH = 256--img:size()[2]
 
 mse = nn.MSECriterion()
 mse:cuda()
-alpha_idx = 3 -- the alpha value of alpha norm
+alpha_idx = 6 -- the alpha value of alpha norm
 alpha_weight = 0.00005
 TVCriterion = nn.TVCriterion(0.00005)
 alphanorm = nn.alphanorm(alpha_idx, alpha_weight)
@@ -48,8 +48,8 @@ conv_layer = torch.Tensor({{1, 4, 7, 9, 12, 14, 17, 19, 22, 24, 26}})
 
 for l = 1, conv_layer:size()[2] do
 	net = nn.Sequential()
-    net:add(alphanorm)
-    net:add(TVCriterion)
+    --net:add(alphanorm)
+    --net:add(TVCriterion)
 	for i = 1, conv_layer[1][l] do
     	net:add(vgg:get(i))
 	end

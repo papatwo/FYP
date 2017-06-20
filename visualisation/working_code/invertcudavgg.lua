@@ -36,14 +36,14 @@ imgH = 224--img:size()[2]
 mse = nn.MSECriterion()
 mse:cuda()
 alpha_idx = 10 -- the alpha value of alpha norm
-alpha_weight = 0.00005
-TVCriterion = nn.TVCriterion(0.00005)
+alpha_weight = 0.005
+TVCriterion = nn.TVCriterion(0.005)
 alphanorm = nn.alphanorm(alpha_idx, alpha_weight)
 net = nn.Sequential()
 --net:add(alphanorm)
 --net:add(TVCriterion)
 
-for l = 1, 1 do
+for l = 1, 3 do
         	net:add(vgg:get(l))
 end
 
@@ -64,7 +64,7 @@ else
 	x = torch.Tensor(3, imgH, imgW):uniform(-1, 1):mul(20):add(128) --initial inversion img
 end
 x_n = x --torch.div(x, 255)
-for n = 1, 30000 do -- do iterations to visualise
+for n = 1, 15000 do -- do iterations to visualise
 	--net:zeroGradParameters() -- try have/without this line: if the module has params, this will zero the accumulation of the gradients wrt these params
 	net:evaluate()
 	x_f = net:forward(x_n) --inversion feature from this layer

@@ -8,8 +8,14 @@ local loadcaffe = require 'loadcaffe'
 require 'dpnn'
 require 'TVCriterion'
 -- Load pretrained VGG (small) model
-local prototxt = '/home/akaishuushan/FYP/VGG_CNN_S/VGG_CNN_S_deploy.prototxt' -- define prototxt path
-local caffemodel='/home/akaishuushan/FYP/VGG_CNN_S/VGG_CNN_S.caffemodel' -- define caffemodel path
+--local prototxt = '/home/akaishuushan/FYP/VGG_CNN_S/VGG_CNN_S_deploy.prototxt' -- define prototxt path
+--local caffemodel='/home/akaishuushan/FYP/VGG_CNN_S/VGG_CNN_S.caffemodel' -- define caffemodel path
+local prototxt = '/data/users/hz4213/VVGG_16_deploy.prototxt' -- define prototxt path
+local caffemodel='/data/users/hz4213/VGG_ILSVRC_16_layers.caffemodel' -- define caffemodel path
+--local prototxt = '/data/users/hz4213/illust2vec.prototxt' -- define prototxt path
+--local caffemodel='/data/users/hz4213/illust2vec_ver200.caffemodel' -- define caffemodel path
+
+
 local vgg = loadcaffe.load(prototxt, caffemodel, 'nn') 
 
 
@@ -20,7 +26,7 @@ end
  print(vgg:get(vgg:size()))
 --local img= torch.rand(3,224,224):uniform()
 local img = image.load('golden.jpg')
---local img = image.load('circle.png')
+--local img = image.load('misaka.jpg')
 
 function make_step(net, img, clip,step_size, jitter)
     local step_size = step_size or 0.1
